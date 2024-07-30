@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "789395642028",
+    "project_id": "user-validator-f7e8c",
+    "storage_bucket": "user-validator-f7e8c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789395642028:android:39cce126ad6db2b7b47109",
+        "android_client_info": {
+          "package_name": "com.internshiptest.uservalidator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf3IKJiSxkPAiFX7HfYh-TcdXDvJdl_b8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
