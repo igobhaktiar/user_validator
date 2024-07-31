@@ -13,52 +13,51 @@ class StatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: userController.status.value == 'Complete'
-            ? Colors.greenAccent
-            : Colors.orangeAccent,
-        border: Border.all(
-          color: Colors.black,
-          width: 2,
-        ),
-      ),
-      child: Row(
-        children: [
-          Obx(
-            () {
-              return Text(
-                '${userController.status.value} Profile',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
-              );
-            },
+    return Obx(
+      () => Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: userController.status.value == 'Complete'
+              ? Colors.greenAccent
+              : Colors.orangeAccent,
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
           ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: userController.status.value == 'Complete'
-                  ? Colors.greenAccent
-                  : Colors.black.withOpacity(0.3),
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              userController.status.value == 'Complete' ? '✔' : '!',
+        ),
+        child: Row(
+          children: [
+            Text(
+              '${userController.status.value} Profile',
               style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
                 fontSize: 16,
               ),
             ),
-          )
-        ],
+            userController.status.value == 'Complete'
+                ? const SizedBox()
+                : Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: userController.status.value == 'Complete'
+                          ? Colors.greenAccent
+                          : Colors.black.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Text(
+                      '!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+          ],
+        ),
       ),
     );
   }

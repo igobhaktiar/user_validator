@@ -2,7 +2,7 @@ import 'package:user_validator/domain/entities/user.dart';
 
 abstract class UserRepository {
   // add user to firestore
-  Future<bool> addUser(String username);
+  Future<User> addUser(String username);
 
   // get user from firestore
   Future<User?> getUser(String userId);
@@ -21,4 +21,16 @@ abstract class UserRepository {
 
   // Update user review status
   Future<void> updateUserReviewStatus(String userId, bool isReview);
+
+  // save user data to shared preference
+  Future<void> saveData(User user);
+
+  // get user data from shared preference
+  Future<User?> getData();
+
+  // clear user data from shared preference
+  Future<void> clearData();
+
+  // delete user from firestore
+  Future<void> deleteUser(String userId);
 }

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:user_validator/presentation/controller/user_controller.dart';
 import 'package:user_validator/presentation/widget/button_custom_widget.dart';
 import 'package:user_validator/utils/colors.dart';
-
+import 'package:user_validator/utils/route_name.dart';
 import '../../data/repositories/user_repository_impl.dart';
 import '../../domain/usecases/username_validation_usecase.dart';
 import '../widget/back_button_widget.dart';
@@ -20,7 +20,9 @@ class UserValidation extends StatefulWidget {
 
 class _UserValidationState extends State<UserValidation> {
   final UserController userController = Get.put(UserController(
-    userRepository: UserRepositoryImpl(FirebaseFirestore.instance),
+    userRepository: UserRepositoryImpl(
+      FirebaseFirestore.instance,
+    ),
     usernameValidationUseCase: UsernameValidationUseCase(),
   ));
 
@@ -36,6 +38,7 @@ class _UserValidationState extends State<UserValidation> {
   @override
   void initState() {
     super.initState();
+    _initController(userController);
   }
 
   void _initController(UserController userController) async {
@@ -45,13 +48,27 @@ class _UserValidationState extends State<UserValidation> {
     availableText = isUserNameAvailable! ? 'available' : 'unavailable';
     changeText = changeUserName! ? 'can' : 'can\'t';
     isLoading = userController.isLoading.value;
+    _usernameController.text = userController.userName.value;
+
+    if (_usernameController.text != '') {
+      userController.validateUsername(_usernameController.text);
+    }
+    var user = await userController.getData();
+    if (user != null) {
+      userController.canChangeUserName(user.userId);
+      userController.checkUserNameAvailability(user.userName);
+    }
   }
 
   void _addUser() {
     if (isValidate! && isUserNameAvailable! && changeUserName!) {
       userController.addUser(_usernameController.text);
+      if (userController.isLoading.value == false) {
+        Get.offNamed(RouteName.home);
+      }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:user_validator/data/source/local/sharedpreference_source.dart';
 import 'package:user_validator/domain/entities/user.dart';
 
 import '../../domain/repositories/user_repository.dart';
@@ -12,9 +11,10 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this.fireStore);
 
   @override
-  Future<bool> addUser(String userName) {
+  Future<User> addUser(String userName) async {
     final source = FireStoreSource(fireStore);
-    return source.addUser(userName);
+    var user = await source.addUser(userName);
+    return user;
   }
 
   @override
@@ -51,5 +51,26 @@ class UserRepositoryImpl implements UserRepository {
   Future<void> updateUserReviewStatus(String userId, bool isReview) {
     final source = FireStoreSource(fireStore);
     return source.updateUserReviewStatus(userId, isReview);
+  }
+
+  @override
+  Future<void> saveData(User user) {
+    return SharedPreferenceSource().saveData(user);
+  }
+
+  @override
+  Future<User?> getData() {
+    return SharedPreferenceSource().getData();
+  }
+
+  @override
+  Future<void> clearData() {
+    return SharedPreferenceSource().clearData();
+  }
+
+  @override
+  Future<void> deleteUser(String userId) {
+    final source = FireStoreSource(fireStore);
+    return source.deleteUser(userId);
   }
 }

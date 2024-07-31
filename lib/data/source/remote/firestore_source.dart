@@ -6,15 +6,15 @@ class FireStoreSource {
 
   FireStoreSource(this.fireStore);
 
-  Future<bool> addUser(String userName) async {
+  Future<User> addUser(String userName) async {
     var id = fireStore.collection('users').doc().id;
     await fireStore.collection('users').doc(id).set({
       'userId': id,
       'userName': userName,
       'isReview': false,
     });
-
-    return true;
+    var user = User(userId: id, userName: userName, isReview: false);
+    return user;
   }
 
   Future<User?> getUser(String userId) async {

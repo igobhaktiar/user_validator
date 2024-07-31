@@ -13,6 +13,7 @@ class UserController extends GetxController {
   var status = 'Incomplete'.obs;
   var isValidate = false.obs;
   var isLoading = false.obs;
+  var userId = ''.obs;
 
   UserController({
     required this.userRepository,
@@ -42,11 +43,15 @@ class UserController extends GetxController {
     await userRepository.updateUserName(userId, userName.value);
   }
 
-  Future<void> addUser(String userName) async {
+  Future<User> addUser(String userName) async {
     isLoading.value = true;
-    var added = await userRepository.addUser(userName);
-    if (added) {
-      checkUserNameAvailability(userName);
+    try {
+      final user = await userRepository.addUser(userName);
+      await userRepository.saveData(user);
+      userId.value = user.userId;
+      isLoading.value = false;
+      return user;
+    } finally {
       isLoading.value = false;
     }
   }
@@ -65,5 +70,28 @@ class UserController extends GetxController {
   Future<List<User>> getAllUsers() async {
     final users = await userRepository.getAllUsers();
     return users.where((user) => user != null).map((user) => user!).toList();
+  }
+
+  Future<void> saveData(User user) async {
+    await userRepository.saveData(user);
+  }
+
+  Future<User?> getData() async {
+    var user = await userRepository.getData();
+    if (user != null) {
+      userName.value = user.userName;
+    }
+    return user;
+  }
+
+  Future<void> deleteUser(String userId) async {
+    await userRepository.deleteUser(userId);
+  }
+
+  Future<void> clearData() async {
+    await userRepository.clearData();
+    var user = await userRepository.getData();
+    userName.value = user?.userName ?? '';
+    status.value = 'Incomplete';
   }
 }
