@@ -17,7 +17,7 @@ abstract class UserRepository {
   Future<List<User?>> getAllUsers();
 
   // can change user name
-  Future<bool> canChangeUserName(String userId, String name);
+  Future<bool> canChangeUserName(String name);
 
   // Update user review status
   Future<void> updateUserReviewStatus(String userId, bool isReview);

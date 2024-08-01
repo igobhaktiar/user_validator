@@ -18,9 +18,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<bool> canChangeUserName(String userId, String name) {
+  Future<bool> canChangeUserName(String name) {
     final source = FireStoreSource(fireStore);
-    return source.canChangeUserName(userId, name);
+    return source.canChangeUserName(name);
   }
 
   @override

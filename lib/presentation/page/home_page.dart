@@ -5,6 +5,7 @@ import 'package:user_validator/data/repositories/user_repository_impl.dart';
 import 'package:user_validator/domain/entities/user.dart';
 import 'package:user_validator/domain/usecases/username_validation_usecase.dart';
 import 'package:user_validator/presentation/controller/user_controller.dart';
+import 'package:user_validator/presentation/page/list_user.dart';
 import 'package:user_validator/presentation/page/user_validation.dart';
 import '../../utils/colors.dart';
 import '../widget/button_custom_widget.dart';
@@ -36,14 +37,8 @@ class _HomePageState extends State<HomePage> {
     _initController();
   }
 
-  void _initController() async {
-    user = await userController.getData();
-
-    if (user != null) {
-      userController.canChangeUserName(user!.userId);
-      userController.checkUserNameAvailability(user!.userName);
-    }
-
+  void _initController() {
+    userController.getData();
     setState(() {});
   }
 
@@ -63,12 +58,7 @@ class _HomePageState extends State<HomePage> {
       textCancel: 'No',
       confirmTextColor: Colors.white,
       onConfirm: () {
-        String userId;
-        if (user != null) {
-          userId = user!.userId;
-        } else {
-          userId = userController.userId.value;
-        }
+        var userId = userController.userId.value;
         _deleteAction(userId);
       },
     );
@@ -145,6 +135,11 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.redAccent,
                     onPressed: _initDelete,
                   ),
+            const SizedBox(height: 32),
+            ButtonCustomWidget(
+              onPressed: () => Get.to(const ListUsers()),
+              text: 'List Users',
+            ),
           ],
         ),
       ),

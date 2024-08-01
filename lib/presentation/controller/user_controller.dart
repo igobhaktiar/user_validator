@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:user_validator/domain/entities/user.dart';
 import 'package:user_validator/domain/repositories/user_repository.dart';
@@ -8,7 +10,7 @@ class UserController extends GetxController {
   final UsernameValidationUseCase usernameValidationUseCase;
 
   var userName = ''.obs;
-  var isUserNameAvailable = false.obs;
+  var isUserNameAvailable = true.obs;
   var changeUserName = true.obs;
   var status = 'Incomplete'.obs;
   var isValidate = false.obs;
@@ -22,44 +24,49 @@ class UserController extends GetxController {
 
   void validateUsername(String input) {
     isValidate.value = usernameValidationUseCase.validateUsername(input);
-    userName.value = input;
-    if (isValidate.value) {
-      checkUserNameAvailability(input);
+  }
+
+  Future<bool> checkUserNameAvailability(String userName) async {
+    isUserNameAvailable.value =
+        await userRepository.isUserNameAvailable(userName);
+    return isUserNameAvailable.value;
+  }
+
+  Future<bool> canChangeUserName(String username) async {
+    try {
+      changeUserName.value = await userRepository.canChangeUserName(username);
+      return changeUserName.value;
+    } catch (e) {
+      var canChange = changeUserName.value = true;
+      return canChange;
     }
   }
 
-  Future<void> checkUserNameAvailability(String userName) async {
-    isUserNameAvailable.value =
-        await userRepository.isUserNameAvailable(userName);
-    status.value = isUserNameAvailable.value ? 'Incomplete' : 'Complete';
-  }
-
-  Future<void> canChangeUserName(String userId) async {
-    changeUserName.value =
-        await userRepository.canChangeUserName(userId, userName.value);
-  }
-
-  Future<void> updateUserName(String userId) async {
-    await userRepository.updateUserName(userId, userName.value);
-  }
-
-  Future<User> addUser(String userName) async {
+  Future<void> updateUserName(String userId, newUsername) async {
     isLoading.value = true;
     try {
-      final user = await userRepository.addUser(userName);
-      await userRepository.saveData(user);
-      userId.value = user.userId;
+      await userRepository.updateUserName(userId, newUsername);
+      var user = await _getUser(userId);
+      _saveData(user!);
       isLoading.value = false;
-      return user;
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> getUser(String userId) async {
-    final user = await userRepository.getUser(userId);
-    if (user != null) {
-      userName.value = user.userName;
+  // add user
+  Future<User> addUser(String name) async {
+    isLoading.value = true;
+    try {
+      final user = await userRepository.addUser(name);
+      userName.value = name;
+      checkUserNameAvailability(userName.value);
+      _saveData(user);
+      _userStatus();
+      isLoading.value = false;
+      return user;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -72,16 +79,18 @@ class UserController extends GetxController {
     return users.where((user) => user != null).map((user) => user!).toList();
   }
 
-  Future<void> saveData(User user) async {
+  Future<void> _saveData(User user) async {
     await userRepository.saveData(user);
   }
 
-  Future<User?> getData() async {
+  Future<void> getData() async {
     var user = await userRepository.getData();
     if (user != null) {
       userName.value = user.userName;
+      userId.value = user.userId;
+      canChangeUserName(userName.value);
     }
-    return user;
+    status.value = _userStatus() ? 'Complete' : 'Incomplete';
   }
 
   Future<void> deleteUser(String userId) async {
@@ -93,5 +102,22 @@ class UserController extends GetxController {
     var user = await userRepository.getData();
     userName.value = user?.userName ?? '';
     status.value = 'Incomplete';
+    userId.value = '';
+  }
+
+  Future<User?> _getUser(String userId) async {
+    return await userRepository.getUser(userId);
+  }
+
+  bool _userStatus() {
+    if (userName.value == '') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<void> updateReviewStatus(String userId, bool isReview) async {
+    await userRepository.updateUserReviewStatus(userId, isReview);
   }
 }

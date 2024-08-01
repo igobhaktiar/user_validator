@@ -54,9 +54,12 @@ class FireStoreSource {
         .toList();
   }
 
-  Future<bool> canChangeUserName(String userId, String name) async {
-    final DocumentSnapshot userDoc =
-        await fireStore.collection('users').doc(userId).get();
+  Future<bool> canChangeUserName(String name) async {
+    final DocumentSnapshot userDoc = await fireStore
+        .collection('users')
+        .where('userName', isEqualTo: name)
+        .get()
+        .then((value) => value.docs.first);
     return userDoc['isReview'] == false;
   }
 
