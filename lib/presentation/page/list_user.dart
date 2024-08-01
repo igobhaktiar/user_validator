@@ -45,7 +45,6 @@ class _ListUsersState extends State<ListUsers> {
     _initController();
     setState(() {});
   }
-
   void _onDeleteAction(String userId) {
     Get.defaultDialog(
       title: 'Delete User',
