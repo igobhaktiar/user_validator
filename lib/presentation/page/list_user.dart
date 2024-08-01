@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:user_validator/presentation/widget/back_button_widget.dart';
 import '../../data/repositories/user_repository_impl.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/usecases/username_validation_usecase.dart';
@@ -90,15 +91,20 @@ class _ListUsersState extends State<ListUsers> {
     return Column(
       children: [
         const SizedBox(height: 24),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: const Text(
-            'List Users',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+        Row(
+          children: [
+            const BackButtonWidget(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const Text(
+                'List Users',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
         const SizedBox(height: 24),
         Expanded(
