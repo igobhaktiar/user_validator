@@ -128,6 +128,11 @@ class _HomePageState extends State<HomePage> {
               onPressed: () => Get.to(const UserValidation()),
             ),
             const SizedBox(height: 32),
+            ButtonCustomWidget(
+              onPressed: () => Get.to(const ListUsers()),
+              text: 'List Users',
+            ),
+            const SizedBox(height: 32),
             controller.userName.value == ''
                 ? const SizedBox()
                 : ButtonCustomWidget(
@@ -135,11 +140,6 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.redAccent,
                     onPressed: _initDelete,
                   ),
-            const SizedBox(height: 32),
-            ButtonCustomWidget(
-              onPressed: () => Get.to(const ListUsers()),
-              text: 'List Users',
-            ),
           ],
         ),
       ),
