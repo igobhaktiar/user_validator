@@ -41,6 +41,7 @@ class StatusWidget extends StatelessWidget {
                 ? const SizedBox()
                 : Container(
                     padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.only(left: 8),
                     decoration: BoxDecoration(
                       color: userController.status.value == 'Complete'
                           ? Colors.greenAccent
